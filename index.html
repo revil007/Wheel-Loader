@@ -67,13 +67,13 @@
   .reopen-btn{ position:absolute; top:6px; right:6px; background:var(--ink); color:#fff; border:none; border-radius:50%; width:20px; height:20px; font-size:0.72rem; cursor:pointer; line-height:1; }
 
   .current-unit-bar{ padding:14px 28px; background:var(--amber-bg); border-bottom:1px solid var(--line); display:flex; align-items:center; gap:18px; flex-wrap:wrap; }
-  .current-unit-bar strong{ font-size:0.95rem; }
+  .current-unit-bar strong{ font-size:1.05rem; }
   .current-unit-bar .field{ max-width:220px; }
   .current-unit-bar .field label{ color:var(--safety-dark); }
 
   .category{ padding:14px 28px 4px; }
   .category h2{ font-size:0.83rem; text-transform:uppercase; letter-spacing:0.8px; color:var(--safety-dark); border-bottom:2px solid var(--safety); display:inline-block; padding-bottom:3px; margin:14px 0 10px; }
-  .item-row{ display:flex; align-items:center; gap:12px; padding:9px 0; border-bottom:1px dashed var(--line); flex-wrap:wrap; }
+  .item-row{ display:flex; align-items:center; gap:8px; padding:9px 0; border-bottom:1px dashed var(--line); flex-wrap:wrap; }
   .item-row .item-text{ flex:1; min-width:220px; font-size:0.92rem; }
   .item-no{ color:var(--muted); font-size:0.8rem; width:22px; flex-shrink:0; }
   .status-btns{ display:flex; gap:6px; flex-shrink:0; }
@@ -110,7 +110,7 @@
   .photo-card img{ width:100%; height:90px; object-fit:cover; display:block; }
   .photo-card button{ position:absolute; top:4px; right:4px; background:rgba(28,29,31,0.75); color:#fff; border:none; border-radius:50%; width:20px; height:20px; cursor:pointer; font-size:0.8rem; }
 
-  .action-bar{ display:flex; gap:12px; justify-content:flex-end; margin-bottom:24px; }
+  .action-bar{ display:flex; gap:8px; justify-content:flex-end; margin-bottom:24px; }
   .action-bar button{ padding:11px 22px; border-radius:3px; font-weight:700; font-size:0.9rem; cursor:pointer; border:1px solid var(--ink); }
   .btn-print{ background:var(--ink); color:var(--safety); }
   .btn-reset{ background:#fff; color:var(--ink); }
@@ -162,8 +162,8 @@
 
     .combined{ padding:0; }
 
-    .c-head{ padding-bottom:4px; margin-bottom:6px; }
-    .c-head h2{ font-size:0.95rem; margin:0 0 1px; }
+    .c-head{ padding-bottom:4px; margin-bottom:4px; }
+    .c-head h2{ font-size:1.05rem; margin:0 0 1px; }
     .c-head .c-sub{ font-size:0.68rem; }
     .c-head .c-badge{ font-size:0.62rem; padding:3px 8px; }
 
@@ -171,14 +171,14 @@
     .c-info div{ padding:2px 6px; }
     .c-info b{ font-size:0.56rem; }
 
-    .c-meter{ margin-bottom:6px; gap:5px; font-size:0.66rem; }
+    .c-meter{ margin-bottom:4px; gap:5px; font-size:0.66rem; }
     .c-meter div{ padding:2px 6px; }
     .c-meter b{ font-size:0.56rem; }
 
-    table.c-table{ font-size:8px; line-height:1.15; }
-    table.c-table th, table.c-table td{ padding:1.5px 4px; }
-    table.c-table thead th{ font-size:7px; padding:2.5px 4px; }
-    table.c-table tr.cat-row td{ font-size:7px; padding:2px 4px; }
+    table.c-table{ font-size:9px; line-height:1.25; }
+    table.c-table th, table.c-table td{ padding:2.5px 5px; }
+    table.c-table thead th{ font-size:8px; padding:3px 5px; }
+    table.c-table tr.cat-row td{ font-size:8px; padding:3px 5px; }
 
     .c-overall{ margin-top:6px; }
     .c-overall table{ font-size:0.66rem; }
@@ -189,9 +189,9 @@
     .c-photos .grid{ grid-template-columns:repeat(10,1fr); gap:3px; }
     .c-photos img{ height:45px; }
 
-    .c-sign{ margin-top:10px; }
+    .c-sign{ margin-top:6px; }
     .c-sign > p{ font-size:0.62rem; margin:0 0 4px; }
-    .c-sign-grid{ gap:12px; }
+    .c-sign-grid{ gap:8px; }
     .c-sign-block .line{ margin-top:16px; padding-top:3px; font-size:0.6rem; }
     .c-sign-block .role{ font-size:0.64rem; }
   }
@@ -202,13 +202,12 @@
 
 <!-- ===================== SCREEN-ONLY EDITING AREA ===================== -->
 <div class="sheet screen-only">
-  <div class="band"></div>
-  <header>
+    <header>
     <div>
       <h1>Wheel Loader Inspection Form</h1>
       <p class="sub">Data Entry &mdash; Sepangar Chemical Industry Sdn Bhd</p>
     </div>
-    <div class="tag">HSE FORM</div>
+    
   </header>
   <div style="padding:8px 28px; background:#f3f2ee; border-bottom:1px solid var(--line); font-size:0.72rem; color:var(--muted);" id="saveIndicator">Progress auto-saves in this browser as you work.</div>
 
