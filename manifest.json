@@ -2,7 +2,7 @@
   "name": "SCI Equipment Inspection",
   "short_name": "SCI Inspect",
   "description": "SCI Equipment Inspection System",
-  "start_url": "./",
+  "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "background_color": "#0B2341",
