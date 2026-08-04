@@ -1,4 +1,4 @@
-const CACHE_NAME = "Wheel-Loader-v1"; // nama cache unik untuk projek ini
+const CACHE_NAME = "Wheel-Loader-v2"; // <-- naikkan nombor ni SETIAP kali update files
 const FILES_TO_CACHE = [
   "/Wheel-Loader/",
   "/Wheel-Loader/index.html",
