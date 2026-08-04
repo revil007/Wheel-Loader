@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wheel Loader Inspection Form</title>
+<style>
+  :root{
+    --ink:#1c1d1f;
+    --paper:#faf9f6;
+    --panel:#ffffff;
+    --line:#dedad2;
+    --safety:#f5b400;
+    --safety-dark:#a87500;
+    --ok:#1e7a3d;
+    --ok-bg:#e5f4ea;
+    --bad:#c23b28;
+    --bad-bg:#fbe9e6;
+    --muted:#6b675f;
+    --amber-bg:#fff4d9;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Segoe UI', Roboto, Arial, sans-serif;
+    background:var(--paper);
+    color:var(--ink);
+    padding:24px 16px 80px;
+  }
+  .wrap{ max-width:960px; margin:0 auto; }
+  .sheet{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:4px;
+    overflow:hidden;
+    box-shadow:0 2px 10px rgba(0,0,0,0.05);
+    margin-bottom:20px;
+  }
+  .band{ height:8px; background:repeating-linear-gradient(135deg,var(--safety) 0 18px,var(--ink) 18px 36px); }
+  header{
+    padding:20px 28px 16px;
+    border-bottom:2px solid var(--ink);
+    display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;
+  }
+  header h1{ margin:0 0 4px; font-size:1.4rem; }
+  header .sub{ margin:0; color:var(--muted); font-size:0.88rem; }
+  .tag{ background:var(--ink); color:var(--safety); font-weight:700; font-size:0.72rem; letter-spacing:1px; padding:6px 12px; border-radius:3px; white-space:nowrap; }
+
+  .meta{ padding:16px 28px; display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:14px; background:#fcfbf9; border-bottom:1px solid var(--line); }
+  .field label{ display:block; font-size:0.7rem; text-transform:uppercase; letter-spacing:0.6px; color:var(--muted); margin-bottom:4px; font-weight:600; }
+  .field input, .field select{ width:100%; padding:8px 9px; border:1px solid var(--line); border-radius:3px; font-size:0.92rem; background:#fff; font-family:inherit; }
+
+  .type-toggle{ padding:12px 28px; display:flex; gap:10px; border-bottom:1px solid var(--line); }
+  .type-btn{ flex:1; padding:10px; border:1px solid var(--line); background:#fff; border-radius:3px; font-weight:700; cursor:pointer; font-size:0.9rem; }
+  .type-btn.active{ background:var(--ink); color:var(--safety); border-color:var(--ink); }
+
+  .unit-select-bar{ padding:16px 28px; border-bottom:1px solid var(--line); }
+  .unit-select-bar > p{ margin:0 0 10px; font-size:0.78rem; text-transform:uppercase; letter-spacing:0.6px; color:var(--muted); font-weight:600; }
+  .unit-btns{ display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:10px; }
+  .unit-btn-wrap{ position:relative; }
+  .unit-btn{ width:100%; padding:13px 10px; border:2px solid var(--line); border-radius:5px; background:#fff; font-weight:700; cursor:pointer; text-align:left; font-size:0.9rem; }
+  .unit-btn .st{ display:block; font-weight:400; font-size:0.72rem; color:var(--muted); margin-top:2px; }
+  .unit-btn.current{ border-color:var(--ink); background:#f3f2ee; }
+  .unit-btn.done{ border-color:var(--ok); background:var(--ok-bg); color:var(--ok); cursor:not-allowed; }
+  .unit-btn.done .st{ color:var(--ok); }
+  .unit-btn:disabled{ opacity:0.85; }
+  .reopen-btn{ position:absolute; top:6px; right:6px; background:var(--ink); color:#fff; border:none; border-radius:50%; width:20px; height:20px; font-size:0.72rem; cursor:pointer; line-height:1; }
+
+  .current-unit-bar{ padding:14px 28px; background:var(--amber-bg); border-bottom:1px solid var(--line); display:flex; align-items:center; gap:18px; flex-wrap:wrap; }
+  .current-unit-bar strong{ font-size:0.95rem; }
+  .current-unit-bar .field{ max-width:220px; }
+  .current-unit-bar .field label{ color:var(--safety-dark); }
+
+  .category{ padding:14px 28px 4px; }
+  .category h2{ font-size:0.83rem; text-transform:uppercase; letter-spacing:0.8px; color:var(--safety-dark); border-bottom:2px solid var(--safety); display:inline-block; padding-bottom:3px; margin:14px 0 10px; }
+  .item-row{ display:flex; align-items:center; gap:12px; padding:9px 0; border-bottom:1px dashed var(--line); flex-wrap:wrap; }
+  .item-row .item-text{ flex:1; min-width:220px; font-size:0.92rem; }
+  .item-no{ color:var(--muted); font-size:0.8rem; width:22px; flex-shrink:0; }
+  .status-btns{ display:flex; gap:6px; flex-shrink:0; }
+  .status-btns button{ border:1px solid var(--line); background:#fff; padding:6px 14px; border-radius:3px; font-weight:700; font-size:0.8rem; cursor:pointer; }
+  .status-btns button.ok-btn.active{ background:var(--ok); border-color:var(--ok); color:#fff; }
+  .status-btns button.bad-btn.active{ background:var(--bad); border-color:var(--bad); color:#fff; }
+  .remark-box{ width:100%; margin-top:6px; display:none; }
+  .remark-box.show{ display:block; }
+  .remark-box textarea{ width:100%; border:1px solid var(--bad); background:var(--bad-bg); border-radius:3px; padding:7px 9px; font-family:inherit; font-size:0.86rem; resize:vertical; min-height:36px; }
+
+  .summary-bar{ margin:14px 28px 0; display:flex; gap:14px; font-size:0.84rem; color:var(--muted); flex-wrap:wrap; }
+  .summary-bar span b{ color:var(--ink); }
+
+  .overall-section{ padding:18px 28px; border-top:1px solid var(--line); }
+  .overall-section h2{ font-size:0.83rem; text-transform:uppercase; letter-spacing:0.8px; color:var(--safety-dark); border-bottom:2px solid var(--safety); display:inline-block; padding-bottom:3px; margin:0 0 12px; }
+  .overall-options{ display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:10px; }
+  .overall-card{ border:2px solid var(--line); border-radius:5px; padding:12px; cursor:pointer; text-align:center; font-weight:700; font-size:0.88rem; background:#fff; }
+  .overall-card small{ display:block; font-weight:400; color:var(--muted); margin-top:4px; font-size:0.72rem; }
+  .overall-card.good.selected{ border-color:var(--ok); background:var(--ok-bg); color:var(--ok); }
+  .overall-card.attention.selected{ border-color:var(--safety-dark); background:var(--amber-bg); color:var(--safety-dark); }
+  .overall-card.unsafe.selected{ border-color:var(--bad); background:var(--bad-bg); color:var(--bad); }
+
+  .complete-bar{ padding:16px 28px 22px; display:flex; justify-content:flex-end; gap:10px; }
+  .btn-complete{ padding:11px 20px; border-radius:3px; font-weight:700; font-size:0.9rem; cursor:pointer; border:1px solid var(--ok); background:var(--ok); color:#fff; }
+  .btn-complete:disabled{ opacity:0.5; cursor:not-allowed; }
+  .all-done-msg{ padding:14px 28px; background:var(--ok-bg); color:var(--ok); font-weight:700; text-align:center; }
+
+  .photo-section{ padding:18px 28px; border-top:1px solid var(--line); }
+  .photo-section h2{ font-size:0.83rem; text-transform:uppercase; letter-spacing:0.8px; color:var(--safety-dark); border-bottom:2px solid var(--safety); display:inline-block; padding-bottom:3px; margin:0 0 12px; }
+  .upload-btn{ display:inline-block; background:#fff; border:1px solid var(--ink); padding:9px 16px; border-radius:3px; font-weight:700; cursor:pointer; font-size:0.86rem; }
+  #photoInput{ display:none; }
+  .photo-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); gap:10px; margin-top:12px; }
+  .photo-card{ position:relative; border:1px solid var(--line); border-radius:4px; overflow:hidden; background:#fff; }
+  .photo-card img{ width:100%; height:90px; object-fit:cover; display:block; }
+  .photo-card button{ position:absolute; top:4px; right:4px; background:rgba(28,29,31,0.75); color:#fff; border:none; border-radius:50%; width:20px; height:20px; cursor:pointer; font-size:0.8rem; }
+
+  .action-bar{ display:flex; gap:12px; justify-content:flex-end; margin-bottom:24px; }
+  .action-bar button{ padding:11px 22px; border-radius:3px; font-weight:700; font-size:0.9rem; cursor:pointer; border:1px solid var(--ink); }
+  .btn-print{ background:var(--ink); color:var(--safety); }
+  .btn-reset{ background:#fff; color:var(--ink); }
+
+  /* ===== Combined preview / print sheet ===== */
+  .preview-label{ font-size:0.75rem; text-transform:uppercase; letter-spacing:1px; color:var(--muted); margin:0 0 8px 4px; font-weight:700; }
+  .combined{ padding:26px; }
+  .c-head{ display:flex; justify-content:space-between; align-items:flex-start; border-bottom:2px solid var(--ink); padding-bottom:10px; margin-bottom:12px; flex-wrap:wrap; gap:10px; }
+  .c-head h2{ margin:0 0 3px; font-size:1.15rem; }
+  .c-head .c-sub{ margin:0; font-size:0.8rem; color:var(--muted); }
+  .c-head .c-badge{ background:var(--ink); color:var(--safety); font-weight:700; font-size:0.7rem; padding:5px 10px; border-radius:3px; letter-spacing:0.5px; }
+  .c-info{ display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:10px; font-size:0.8rem; }
+  .c-info div{ border:1px solid var(--line); border-radius:3px; padding:6px 9px; }
+  .c-info b{ display:block; font-size:0.66rem; text-transform:uppercase; color:var(--muted); font-weight:600; letter-spacing:0.4px; }
+  .c-meter{ display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:16px; font-size:0.8rem; }
+  .c-meter div{ border:1px solid var(--line); border-radius:3px; padding:6px 9px; text-align:center; }
+  .c-meter b{ display:block; font-size:0.66rem; text-transform:uppercase; color:var(--muted); font-weight:600; }
+  table.c-table{ width:100%; border-collapse:collapse; font-size:0.78rem; }
+  table.c-table th, table.c-table td{ border:1px solid var(--line); padding:5px 6px; text-align:left; vertical-align:top; }
+  table.c-table thead th{ background:var(--ink); color:var(--safety); font-size:0.7rem; text-transform:uppercase; letter-spacing:0.4px; text-align:center; }
+  table.c-table td.center{ text-align:center; font-weight:700; }
+  table.c-table td.ok-mark{ color:var(--ok); }
+  table.c-table td.bad-mark{ color:var(--bad); }
+  table.c-table td.no-col{ text-align:center; color:var(--muted); width:24px; }
+  table.c-table tr.cat-row td{ background:#f3f2ee; font-weight:700; font-size:0.74rem; text-transform:uppercase; letter-spacing:0.4px; color:var(--safety-dark); }
+  .c-overall{ margin-top:16px; }
+  .c-overall table{ width:100%; border-collapse:collapse; font-size:0.8rem; }
+  .c-overall th, .c-overall td{ border:1px solid var(--line); padding:7px 9px; text-align:center; }
+  .c-overall thead th{ background:var(--ink); color:var(--safety); font-size:0.7rem; text-transform:uppercase; }
+  .c-overall td.good{ color:var(--ok); font-weight:700; }
+  .c-overall td.attention{ color:var(--safety-dark); font-weight:700; }
+  .c-overall td.unsafe{ color:var(--bad); font-weight:700; }
+  .c-photos{ margin-top:16px; }
+  .c-photos .grid{ display:grid; grid-template-columns:repeat(6,1fr); gap:6px; }
+  .c-photos img{ width:100%; height:70px; object-fit:cover; border:1px solid var(--line); border-radius:3px; }
+  .c-sign{ margin-top:24px; }
+  .c-sign > p{ font-size:0.78rem; text-transform:uppercase; letter-spacing:0.6px; color:var(--muted); font-weight:700; margin:0 0 12px; }
+  .c-sign-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:18px; }
+  .c-sign-block .line{ border-top:1px solid var(--ink); margin-top:34px; padding-top:5px; font-size:0.72rem; }
+  .c-sign-block .role{ font-weight:700; font-size:0.78rem; }
+
+  @media print{
+    body{ padding:0; background:#fff; font-size:11px; }
+    .screen-only{ display:none !important; }
+    .sheet.combined-sheet{ box-shadow:none; border:none; }
+    .band{ display:none; }
+    .preview-label{ display:none; }
+    @page{ size:A4 landscape; margin:6mm; }
+
+    .combined{ padding:0; }
+
+    .c-head{ padding-bottom:4px; margin-bottom:6px; }
+    .c-head h2{ font-size:0.95rem; margin:0 0 1px; }
+    .c-head .c-sub{ font-size:0.68rem; }
+    .c-head .c-badge{ font-size:0.62rem; padding:3px 8px; }
+
+    .c-info{ margin-bottom:5px; gap:5px; font-size:0.66rem; }
+    .c-info div{ padding:2px 6px; }
+    .c-info b{ font-size:0.56rem; }
+
+    .c-meter{ margin-bottom:6px; gap:5px; font-size:0.66rem; }
+    .c-meter div{ padding:2px 6px; }
+    .c-meter b{ font-size:0.56rem; }
+
+    table.c-table{ font-size:8px; line-height:1.15; }
+    table.c-table th, table.c-table td{ padding:1.5px 4px; }
+    table.c-table thead th{ font-size:7px; padding:2.5px 4px; }
+    table.c-table tr.cat-row td{ font-size:7px; padding:2px 4px; }
+
+    .c-overall{ margin-top:6px; }
+    .c-overall table{ font-size:0.66rem; }
+    .c-overall th, .c-overall td{ padding:2.5px 6px; }
+    .c-overall thead th{ font-size:0.58rem; }
+
+    .c-photos{ margin-top:6px; }
+    .c-photos .grid{ grid-template-columns:repeat(10,1fr); gap:3px; }
+    .c-photos img{ height:45px; }
+
+    .c-sign{ margin-top:10px; }
+    .c-sign > p{ font-size:0.62rem; margin:0 0 4px; }
+    .c-sign-grid{ gap:12px; }
+    .c-sign-block .line{ margin-top:16px; padding-top:3px; font-size:0.6rem; }
+    .c-sign-block .role{ font-size:0.64rem; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ===================== SCREEN-ONLY EDITING AREA ===================== -->
+<div class="sheet screen-only">
+  <div class="band"></div>
+  <header>
+    <div>
+      <h1>Wheel Loader Inspection Form</h1>
+      <p class="sub">Data Entry &mdash; Sepangar Chemical Industry Sdn Bhd</p>
+    </div>
+    <div class="tag">HSE FORM</div>
+  </header>
+  <div style="padding:8px 28px; background:#f3f2ee; border-bottom:1px solid var(--line); font-size:0.72rem; color:var(--muted);" id="saveIndicator">Progress auto-saves in this browser as you work.</div>
+
+  <div class="meta">
+    <div class="field"><label>Date</label><input type="date" id="fDate" oninput="renderCombined()"></div>
+    <div class="field"><label>Time</label><input type="time" id="fTime" oninput="renderCombined()"></div>
+    <div class="field"><label>Checked By</label><input type="text" id="fInspector" placeholder="Full name" oninput="renderCombined()"></div>
+  </div>
+
+  <div class="type-toggle">
+    <button class="type-btn active" id="btnDaily" onclick="setType('daily')">DAILY INSPECTION</button>
+    <button class="type-btn" id="btnWeekly" onclick="setType('weekly')">WEEKLY INSPECTION</button>
+  </div>
+
+  <div class="unit-select-bar">
+    <p>Select Wheel Loader to Inspect</p>
+    <div class="unit-btns" id="unitBtns"></div>
+  </div>
+
+  <div class="current-unit-bar">
+    <strong id="currentUnitLabel">Currently Inspecting: WL-01</strong>
+    <div class="field">
+      <label>Hour Meter Reading</label>
+      <input type="text" id="fMeter" placeholder="e.g. 4521.5" oninput="setMeter(this.value)">
+    </div>
+  </div>
+
+  <div id="checklistContainer"></div>
+
+  <div class="summary-bar">
+    <span>Total Items: <b id="sumTotal">0</b></span>
+    <span>OK: <b id="sumOk" style="color:var(--ok)">0</b></span>
+    <span>NOT OK: <b id="sumBad" style="color:var(--bad)">0</b></span>
+    <span>Unmarked: <b id="sumPending">0</b></span>
+  </div>
+
+  <div class="overall-section">
+    <h2>Overall Condition of This Unit</h2>
+    <div class="overall-options">
+      <div class="overall-card good" data-val="good" onclick="setOverall('good')">GOOD CONDITION<small>Safe to operate</small></div>
+      <div class="overall-card attention" data-val="attention" onclick="setOverall('attention')">NEED ATTENTION<small>Operate with monitoring</small></div>
+      <div class="overall-card unsafe" data-val="unsafe" onclick="setOverall('unsafe')">NOT SAFE<small>Not safe to operate</small></div>
+    </div>
+  </div>
+
+  <div id="allDoneMsg" class="all-done-msg" style="display:none;">✓ All 4 wheel loaders have been inspected for this session.</div>
+
+  <div class="complete-bar">
+    <button class="btn-complete" id="btnComplete" onclick="markComplete()">✓ Mark as Completed — Lock This Unit</button>
+  </div>
+
+  <div class="photo-section">
+    <h2>Photos</h2>
+    <label class="upload-btn" for="photoInput">+ Add Photo</label>
+    <input type="file" id="photoInput" accept="image/*" multiple onchange="handlePhotos(event)">
+    <div class="photo-grid" id="photoGrid"></div>
+  </div>
+</div>
+
+<!-- ===================== COMBINED VIEW (screen preview + actual print output) ===================== -->
+<p class="preview-label">Print Preview (All 4 Units)</p>
+<div class="sheet combined-sheet">
+  <div class="combined" id="combinedView"></div>
+</div>
+
+<div class="action-bar screen-only">
+  <button class="btn-reset" onclick="resetForm()">Reset All</button>
+  <button class="btn-print" onclick="window.print()">🖨️ Print</button>
+   <button class="btn-print" id="btnSubmit" onclick="submitInspection()">📤 Submit</button>
+</div>
+
+</div>
+
+<script>
+// ---------- Checklist data ----------
+const DAILY_ITEMS = [
+  "Hour meter",
+  "Engine oil",
+  "Coolant level",
+  "Hydraulic oil level",
+  "Transmission oil",
+  "Brake oil level",
+  "Fuel level & water separator",
+  "Inspect for oil, fuel and hydraulic leaks",
+  "Check radiator cleanliness",
+  "Inspect air filter restriction indicator",
+  "Inspect tyre pressure (pressure, wear and damage)",
+  "Check rims & wheel nuts",
+  "Inspect bucket cutting edge",
+  "Inspect lift arms & bucket pins",
+  "Lubricate grease points if required",
+  "Check steering function",
+  "Check service brake & parking brake",
+  "Check horn",
+  "Check reverse alarm",
+  "Check gauges & warning indicators",
+  "Inspect seat belt",
+  "Check windshield & mirrors",
+  "Check air-conditioning",
+  "Machine cleanliness",
+];
+
+const WEEKLY_EXTRA_ITEMS = [
+  "Lubricate all grease nipples",
+  "Check battery condition & terminals",
+  "Inspect fan belt tension",
+  "Inspect hoses & clamps",
+  "Check tyre pressure",
+  "Check articulation joint condition",
+  "Inspect hydraulic cylinders",
+  "Inspect drive shaft & universal joints",
+  "Clean radiator fins",
+];
+
+// Combined flat item list, each with a stable id and an "extra" flag for weekly-only items
+const ITEMS = [
+  ...DAILY_ITEMS.map((t,i)=>({ id:'d'+i, t, extra:false })),
+  ...WEEKLY_EXTRA_ITEMS.map((t,i)=>({ id:'w'+i, t, extra:true })),
+];
+
+const UNITS = ['WL-01','WL-02','WL-03','WL-04'];
+let currentType = 'daily';
+let currentUnit = 'WL-01';
+let unitData = {};
+UNITS.forEach(u => unitData[u] = { statuses:{}, meter:'', overall:null, completed:false });
+let photos = [];
+
+// ---------- Type toggle ----------
+function setType(type){
+  currentType = type;
+  document.getElementById('btnDaily').classList.toggle('active', type==='daily');
+  document.getElementById('btnWeekly').classList.toggle('active', type==='weekly');
+  renderChecklist();
+  renderCombined();
+}
+
+// ---------- Unit selection ----------
+function renderUnitButtons(){
+  const wrap = document.getElementById('unitBtns');
+  wrap.innerHTML = '';
+  UNITS.forEach(u=>{
+    const d = unitData[u];
+    const outer = document.createElement('div');
+    outer.className = 'unit-btn-wrap';
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'unit-btn' + (u===currentUnit ? ' current':'') + (d.completed ? ' done':'');
+    btn.disabled = d.completed;
+    btn.innerHTML = `${u}<span class="st">${d.completed ? '✓ Inspection completed' : (u===currentUnit ? 'Currently inspecting' : 'Not inspected yet')}</span>`;
+    if(!d.completed){
+      btn.onclick = ()=> selectUnit(u);
+    }
+    outer.appendChild(btn);
+    if(d.completed){
+      const reopen = document.createElement('button');
+      reopen.className = 'reopen-btn';
+      reopen.title = 'Reopen for edit';
+      reopen.innerHTML = '↺';
+      reopen.onclick = ()=> reopenUnit(u);
+      outer.appendChild(reopen);
+    }
+    wrap.appendChild(outer);
+  });
+
+  const allDone = UNITS.every(u=>unitData[u].completed);
+  document.getElementById('allDoneMsg').style.display = allDone ? 'block' : 'none';
+  document.querySelector('.current-unit-bar').style.display = allDone ? 'none' : 'flex';
+  document.getElementById('checklistContainer').style.display = allDone ? 'none' : 'block';
+  document.querySelector('.summary-bar').style.display = allDone ? 'none' : 'flex';
+  document.querySelector('.overall-section').style.display = allDone ? 'none' : 'block';
+  document.querySelector('.complete-bar').style.display = allDone ? 'none' : 'flex';
+}
+
+function selectUnit(u){
+  currentUnit = u;
+  document.getElementById('currentUnitLabel').textContent = 'Currently Inspecting: ' + u;
+  document.getElementById('fMeter').value = unitData[u].meter || '';
+  renderUnitButtons();
+  renderChecklist();
+  updateOverallCards();
+}
+
+function reopenUnit(u){
+  if(!confirm(u + ' has already been marked complete. Reopen for editing?')) return;
+  unitData[u].completed = false;
+  selectUnit(u);
+  renderCombined();
+}
+
+function markComplete(){
+  unitData[currentUnit].completed = true;
+  const next = UNITS.find(u=>!unitData[u].completed);
+  renderCombined();
+  if(next){
+    selectUnit(next);
+  } else {
+    renderUnitButtons();
+  }
+}
+
+// ---------- Checklist rendering (for currentUnit) ----------
+function renderChecklist(){
+  const container = document.getElementById('checklistContainer');
+  container.innerHTML = '';
+  const statuses = unitData[currentUnit].statuses;
+  const catDiv = document.createElement('div');
+  catDiv.className = 'category';
+  const h2 = document.createElement('h2');
+  h2.textContent = currentType==='weekly' ? 'Weekly Inspection Checklist (9 Items)' : 'Daily Inspection Checklist (24 Items)';
+  catDiv.appendChild(h2);
+
+  let counter = 1;
+  ITEMS.forEach(it=>{
+    if(currentType==='weekly' ? !it.extra : it.extra) return;
+    const id = it.id;
+    const row = document.createElement('div');
+    row.className = 'item-row';
+    row.innerHTML = `
+      <span class="item-no">${counter++}.</span>
+      <span class="item-text">${it.t}</span>
+      <div class="status-btns">
+        <button type="button" class="ok-btn" onclick="setStatus('${id}','ok')">OK</button>
+        <button type="button" class="bad-btn" onclick="setStatus('${id}','bad')">NOT OK</button>
+      </div>
+      <div class="remark-box" id="remarkBox-${id}">
+        <textarea placeholder="Remark..." oninput="setRemark('${id}', this.value)">${(statuses[id]&&statuses[id].remark)||''}</textarea>
+      </div>
+    `;
+    catDiv.appendChild(row);
+    if(statuses[id]){
+      const btns = row.querySelectorAll('.status-btns button');
+      if(statuses[id].status==='ok') btns[0].classList.add('active');
+      if(statuses[id].status==='bad'){
+        btns[1].classList.add('active');
+        row.querySelector('.remark-box').classList.add('show');
+      }
+    }
+  });
+  container.appendChild(catDiv);
+  updateSummary();
+}
+
+function setStatus(id, status){
+  const statuses = unitData[currentUnit].statuses;
+  if(!statuses[id]) statuses[id] = {status:null, remark:''};
+  statuses[id].status = status;
+  renderChecklist();
+  renderCombined();
+}
+
+function setRemark(id, val){
+  const statuses = unitData[currentUnit].statuses;
+  if(!statuses[id]) statuses[id] = {status:null, remark:''};
+  statuses[id].remark = val;
+  renderCombined();
+}
+
+function setMeter(val){
+  unitData[currentUnit].meter = val;
+  renderCombined();
+}
+
+function updateSummary(){
+  let total=0, ok=0, bad=0;
+  const statuses = unitData[currentUnit].statuses;
+  ITEMS.forEach(it=>{
+    if(currentType==='weekly' ? !it.extra : it.extra) return;
+    total++;
+    if(statuses[it.id]){
+      if(statuses[it.id].status==='ok') ok++;
+      if(statuses[it.id].status==='bad') bad++;
+    }
+  });
+  document.getElementById('sumTotal').textContent = total;
+  document.getElementById('sumOk').textContent = ok;
+  document.getElementById('sumBad').textContent = bad;
+  document.getElementById('sumPending').textContent = total-ok-bad;
+}
+
+// ---------- Overall condition (per unit) ----------
+function setOverall(val){
+  unitData[currentUnit].overall = val;
+  updateOverallCards();
+  renderCombined();
+}
+function updateOverallCards(){
+  document.querySelectorAll('.overall-card').forEach(c=>{
+    c.classList.toggle('selected', c.dataset.val===unitData[currentUnit].overall);
+  });
+}
+
+// ---------- Photos (shared across the form) ----------
+function handlePhotos(e){
+  const files = Array.from(e.target.files);
+  files.forEach(file=>{
+    const reader = new FileReader();
+    reader.onload = ev=>{
+      photos.push(ev.target.result);
+      renderPhotos();
+      renderCombined();
+    };
+    reader.readAsDataURL(file);
+  });
+  e.target.value = '';
+}
+function renderPhotos(){
+  const grid = document.getElementById('photoGrid');
+  grid.innerHTML = '';
+  photos.forEach((src, idx)=>{
+    const card = document.createElement('div');
+    card.className = 'photo-card';
+    card.innerHTML = `<img src="${src}"><button onclick="removePhoto(${idx})">×</button>`;
+    grid.appendChild(card);
+  });
+}
+function removePhoto(idx){
+  photos.splice(idx,1);
+  renderPhotos();
+  renderCombined();
+}
+
+// ---------- Reset ----------
+function resetForm(){
+  if(!confirm('Reset all data for all 4 wheel loaders? This also clears the auto-saved draft in this browser.')) return;
+  clearSavedState();
+  UNITS.forEach(u => unitData[u] = { statuses:{}, meter:'', overall:null, completed:false });
+  photos = [];
+  currentUnit = 'WL-01';
+  document.getElementById('fDate').value = '';
+  document.getElementById('fTime').value = '';
+  document.getElementById('fInspector').value = '';
+  document.getElementById('fMeter').value = '';
+  renderUnitButtons();
+  renderChecklist();
+  updateOverallCards();
+  renderPhotos();
+  renderCombined();
+}
+
+// ---------- Combined preview / print view ----------
+const OVERALL_LABEL = { good:'Good', attention:'Need Attention', unsafe:'Not Safe', null:'—' };
+
+function renderCombined(){
+  const date = document.getElementById('fDate') ? document.getElementById('fDate').value : '';
+  const time = document.getElementById('fTime') ? document.getElementById('fTime').value : '';
+  const inspector = document.getElementById('fInspector') ? document.getElementById('fInspector').value : '';
+
+  let rows = '';
+  let no = 1;
+  ITEMS.forEach(it=>{
+    if(currentType==='weekly' ? !it.extra : it.extra) return;
+    const id = it.id;
+    let unitCells = '';
+    let remarkParts = [];
+    UNITS.forEach(u=>{
+      const s = unitData[u].statuses[id];
+      if(s && s.status==='ok'){
+        unitCells += `<td class="center ok-mark">OK</td>`;
+      } else if(s && s.status==='bad'){
+        unitCells += `<td class="center bad-mark">X</td>`;
+        if(s.remark && s.remark.trim()) remarkParts.push(`<b>${u}:</b> ${escapeHtml(s.remark.trim())}`);
+      } else {
+        unitCells += `<td class="center">-</td>`;
+      }
+    });
+    rows += `<tr><td class="no-col">${no++}</td><td>${it.t}</td>${unitCells}<td>${remarkParts.join('<br>') || '-'}</td></tr>`;
+  });
+
+  const meterCells = UNITS.map(u=>`<div><b>${u}</b>${unitData[u].meter ? escapeHtml(unitData[u].meter) : '-'}</div>`).join('');
+  const overallCells = UNITS.map(u=>{
+    const ov = unitData[u].overall;
+    const cls = ov || '';
+    return `<td class="${cls}">${OVERALL_LABEL[ov]}</td>`;
+  }).join('');
+
+  const photoHtml = photos.length ? `
+    <div class="c-photos">
+      <b style="font-size:0.7rem;text-transform:uppercase;color:var(--muted);">Photos</b>
+      <div class="grid">${photos.map(p=>`<img src="${p}">`).join('')}</div>
+    </div>` : '';
+
+  document.getElementById('combinedView').innerHTML = `
+    <div class="c-head">
+      <div>
+        <h2>Wheel Loader Inspection Form</h2>
+        <p class="c-sub">Sepangar Chemical Industry Sdn Bhd &mdash; WL-01, WL-02, WL-03, WL-04</p>
+      </div>
+      <div class="c-badge">${currentType==='weekly' ? 'WEEKLY INSPECTION' : 'DAILY INSPECTION'}</div>
+    </div>
+    <div class="c-info">
+      <div><b>Date</b>${date || '-'}</div>
+      <div><b>Time</b>${time || '-'}</div>
+      <div><b>Checked By</b>${escapeHtml(inspector) || '-'}</div>
+      <div><b>Type</b>${currentType==='weekly' ? 'Weekly' : 'Daily'}</div>
+    </div>
+    <div class="c-meter">${meterCells}</div>
+    <table class="c-table">
+      <thead>
+        <tr>
+          <th>No</th><th>Inspection Item</th><th>WL-01</th><th>WL-02</th><th>WL-03</th><th>WL-04</th><th>Remarks</th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>
+    <div class="c-overall">
+      <table>
+        <thead><tr><th>Overall Condition</th><th>WL-01</th><th>WL-02</th><th>WL-03</th><th>WL-04</th></tr></thead>
+        <tbody><tr><td style="text-align:left;font-weight:700;">Overall Condition</td>${overallCells}</tr></tbody>
+      </table>
+    </div>
+    ${photoHtml}
+    <div class="c-sign">
+      <p>Reviewed By</p>
+      <div class="c-sign-grid">
+        <div class="c-sign-block"><div class="line"><span class="role">Admin Superintendent</span></div></div>
+        <div class="c-sign-block"><div class="line"><span class="role">Admin Manager</span></div></div>
+        <div class="c-sign-block"><div class="line"><span class="role">Maintenance Executive 1</span></div></div>
+        <div class="c-sign-block"><div class="line"><span class="role">Maintenance Executive 2</span></div></div>
+      </div>
+    </div>
+  `;
+  saveState();
+}
+
+function escapeHtml(str){
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+// ---------- Auto-save (browser local storage, same device/browser only) ----------
+const STORAGE_KEY = 'wl_inspection_draft_v1';
+
+function saveState(){
+  try{
+    const state = {
+      currentType, currentUnit, unitData, photos,
+      date: document.getElementById('fDate') ? document.getElementById('fDate').value : '',
+      time: document.getElementById('fTime') ? document.getElementById('fTime').value : '',
+      inspector: document.getElementById('fInspector') ? document.getElementById('fInspector').value : '',
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    const ind = document.getElementById('saveIndicator');
+    if(ind){
+      const t = new Date();
+      ind.textContent = 'Auto-saved in this browser ' + t.toLocaleTimeString();
+    }
+  }catch(e){
+    const ind = document.getElementById('saveIndicator');
+    if(ind) ind.textContent = 'Auto-save unavailable in this preview — download and open the file directly to enable it.';
+  }
+}
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return false;
+    const state = JSON.parse(raw);
+    if(!state || !state.unitData) return false;
+    currentType = state.currentType || 'daily';
+    currentUnit = state.currentUnit || 'WL-01';
+    unitData = state.unitData;
+    photos = state.photos || [];
+    if(document.getElementById('fDate')) document.getElementById('fDate').value = state.date || '';
+    if(document.getElementById('fTime')) document.getElementById('fTime').value = state.time || '';
+    if(document.getElementById('fInspector')) document.getElementById('fInspector').value = state.inspector || '';
+    return true;
+  }catch(e){ return false; }
+}
+
+function clearSavedState(){
+  try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
+}
+
+// ---------- Init ----------
+function setToday(){
+  const d = new Date();
+  document.getElementById('fDate').value = d.toISOString().slice(0,10);
+  document.getElementById('fTime').value = d.toTimeString().slice(0,5);
+}
+
+function init(){
+  const restored = loadState();
+  if(!restored) setToday();
+  document.getElementById('btnDaily').classList.toggle('active', currentType==='daily');
+  document.getElementById('btnWeekly').classList.toggle('active', currentType==='weekly');
+  document.getElementById('currentUnitLabel').textContent = 'Currently Inspecting: ' + currentUnit;
+  if(document.getElementById('fMeter')) document.getElementById('fMeter').value = unitData[currentUnit].meter || '';
+  renderUnitButtons();
+  renderChecklist();
+  renderPhotos();
+  updateOverallCards();
+  renderCombined();
+  if(restored){
+    const ind = document.getElementById('saveIndicator');
+    if(ind) ind.textContent = 'Restored your last saved progress from this browser.';
+  }
+}
+
+
+const WEBAPP_URL="https://script.google.com/macros/s/AKfycbxqVfNY3CLSy0zWhSRQpLsP_g4VGnFY6EKcoLNpVluJ3R_KvfxBhNZwEtsUqKbFeoP7Og/exec";
+
+async function submitInspection(){
+ if(!UNITS.every(u=>unitData[u].completed)){
+   alert("Complete all 4 wheel loader inspections first.");
+   return;
+ }
+ const payload={
+   type:currentType,
+   date:document.getElementById("fDate").value,
+   time:document.getElementById("fTime").value,
+   inspector:document.getElementById("fInspector").value,
+   units:[]
+ };
+ UNITS.forEach(u=>{
+   const d=unitData[u];
+   const items=[];
+   ITEMS.forEach(it=>{
+      if(currentType==="weekly"?!it.extra:it.extra)return;
+      const s=d.statuses[it.id]||{};
+      items.push({item:it.t,status:s.status||"",remark:s.remark||""});
+   });
+   payload.units.push({name:u,meter:d.meter||"",overall:d.overall||"",items:items});
+ });
+ try{
+   const r=await fetch(WEBAPP_URL,{
+     method:"POST",
+     headers:{"Content-Type":"application/json"},
+     body:JSON.stringify(payload)
+   });
+   const res=await r.json();
+   if(res.success){
+      alert((currentType==="daily"?"Daily":"Weekly")+" submission was completed.\nEmail sent successfully.");
+      document.getElementById("btnSubmit").disabled=true;
+   }else{
+      alert("Submit failed: "+res.message);
+   }
+ }catch(e){
+   alert("Unable to connect to Apps Script.\n"+e);
+ }
+}
+
+init();
+</script>
+
+</body>
+</html>
