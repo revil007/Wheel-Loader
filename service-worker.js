@@ -1,4 +1,4 @@
-const CACHE_NAME = "Wheel-Loader-v2"; // <-- naikkan nombor ni SETIAP kali update files
+const CACHE_NAME = "Wheel-Loader-v3"; // naikkan nombor ni bila ko ubah senarai FILES_TO_CACHE (icon/manifest dll)
 const FILES_TO_CACHE = [
   "/Wheel-Loader/",
   "/Wheel-Loader/index.html",
@@ -37,13 +37,34 @@ self.addEventListener("activate", (event) => {
 
 // Fetch
 self.addEventListener("fetch", (event) => {
-  event.respondWith(
-    caches.match(event.request).then((response) => {
-      // fallback ke index.html kalau tiada response & offline
-      return (
-        response ||
-        fetch(event.request).catch(() => caches.match("/Wheel-Loader/index.html"))
-      );
-    })
-  );
+  const url = event.request.url;
+  const isHTML =
+    event.request.mode === "navigate" ||
+    url.endsWith("index.html") ||
+    url.endsWith("/Wheel-Loader/");
+
+  if (isHTML) {
+    // Network-first: index.html SELALU cuba ambil versi terbaru dari internet dulu.
+    // Cache cuma jadi fallback bila offline / takda internet.
+    event.respondWith(
+      fetch(event.request)
+        .then((res) => {
+          const resClone = res.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, resClone));
+          return res;
+        })
+        .catch(() => caches.match(event.request))
+    );
+  } else {
+    // Static assets (icon, manifest dll): cache-first sebab jarang berubah.
+    // Kalau ko update icon/manifest, naikkan CACHE_NAME di atas supaya refresh.
+    event.respondWith(
+      caches.match(event.request).then((response) => {
+        return (
+          response ||
+          fetch(event.request).catch(() => caches.match("/Wheel-Loader/index.html"))
+        );
+      })
+    );
+  }
 });
