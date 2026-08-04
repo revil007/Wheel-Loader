@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -946,6 +947,15 @@ function init(){
 
 init();
 </script>
-
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("/Wheel-Loader/service-worker.js")
+    .then((reg) => {
+      console.log("Service worker registered:", reg);
+    })
+    .catch((err) => {
+      console.error("Service worker registration failed:", err);
+    });
+}
+</script>
 </body>
 </html>
