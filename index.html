@@ -8,7 +8,7 @@
 
 <title>SCI Equipment Inspection</title>
 
-<link rel="manifest" href="./manifest.json">
+<link rel="manifest" href="manifest.json">
 
 <meta name="theme-color" content="#0B2341">
 
@@ -296,15 +296,16 @@
 </div>
 
 <!-- ===================== COMBINED VIEW (screen preview + actual print output) ===================== -->
-<p class="preview-label">Print Preview (All 4 Units)</p>
-<div class="sheet combined-sheet">
+<p class="preview-label" id="previewLabel" style="display:none;">Print Preview (All 4 Units)</p>
+<div class="sheet combined-sheet" id="previewSheet" style="display:none;">
   <div class="combined" id="combinedView"></div>
 </div>
 
 <div class="action-bar screen-only">
   <button class="btn-reset" onclick="resetForm()">Reset All</button>
+  <button class="btn-reset" id="btnPreview" onclick="togglePreview()">📄 View Print Preview</button>
   <button class="btn-submit" id="btnSubmit" onclick="doSubmit()">✉️ Submit Inspection</button>
-  <button class="btn-print" onclick="window.print()">🖨️ Print</button>
+  <button class="btn-print" onclick="printInspection()">🖨️ Print</button>
 </div>
 
 </div>
@@ -926,6 +927,41 @@ function setToday(){
   document.getElementById('fTime').value = d.toTimeString().slice(0,5);
 }
 
+
+function printInspection(){
+  const sheet=document.getElementById("previewSheet");
+  const label=document.getElementById("previewLabel");
+  const wasHidden = sheet && sheet.style.display==="none";
+
+  if(sheet && wasHidden){
+    sheet.style.display="block";
+  }
+  if(label && wasHidden){
+    label.style.display="block";
+  }
+
+  setTimeout(function(){
+    window.print();
+
+    if(wasHidden){
+      setTimeout(function(){
+        if(sheet) sheet.style.display="none";
+        if(label) label.style.display="none";
+      },300);
+    }
+  },100);
+}
+
+function togglePreview(){
+  const sheet=document.getElementById("previewSheet");
+  const label=document.getElementById("previewLabel");
+  const btn=document.getElementById("btnPreview");
+  const show=sheet.style.display==="none";
+  sheet.style.display=show?"block":"none";
+  label.style.display=show?"block":"none";
+  btn.textContent=show?"🙈 Hide Print Preview":"📄 View Print Preview";
+}
+
 function init(){
   const restored = loadState();
   if(!restored) setToday();
@@ -947,18 +983,14 @@ function init(){
 
 init();
 </script>
-
-<script>
 if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./service-worker.js")
-      .then((reg) => {
-        console.log("Service Worker registered:", reg);
-      })
-      .catch((err) => {
-        console.error("Service Worker registration failed:", err);
-      });
-  });
+  navigator.serviceWorker.register("/Wheel-Loader/service-worker.js")
+    .then((reg) => {
+      console.log("Service worker registered:", reg);
+    })
+    .catch((err) => {
+      console.error("Service worker registration failed:", err);
+    });
 }
 </script>
 </body>
