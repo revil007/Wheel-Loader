@@ -1,30 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>SCI Equipment Inspection</title>
-
-<link rel="manifest" href="manifest.json">
-
-<meta name="theme-color" content="#0B2341">
-
-<meta name="mobile-web-app-capable" content="yes">
-
-<meta name="apple-mobile-web-app-capable" content="yes">
-
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-
-<meta name="apple-mobile-web-app-title" content="SCI Inspect">
-
-<link rel="apple-touch-icon" href="icon/icon-192.png">
-
-<link rel="icon" type="image/png" sizes="192x192" href="icon/icon-192.png">
-
-<link rel="icon" type="image/png" sizes="512x512" href="icon/icon-512.png">
+<title>Wheel Loader Inspection Form</title>
 <style>
   :root{
     --ink:#1c1d1f;
@@ -88,13 +67,13 @@
   .reopen-btn{ position:absolute; top:6px; right:6px; background:var(--ink); color:#fff; border:none; border-radius:50%; width:20px; height:20px; font-size:0.72rem; cursor:pointer; line-height:1; }
 
   .current-unit-bar{ padding:14px 28px; background:var(--amber-bg); border-bottom:1px solid var(--line); display:flex; align-items:center; gap:18px; flex-wrap:wrap; }
-  .current-unit-bar strong{ font-size:1.05rem; }
+  .current-unit-bar strong{ font-size:0.95rem; }
   .current-unit-bar .field{ max-width:220px; }
   .current-unit-bar .field label{ color:var(--safety-dark); }
 
   .category{ padding:14px 28px 4px; }
   .category h2{ font-size:0.83rem; text-transform:uppercase; letter-spacing:0.8px; color:var(--safety-dark); border-bottom:2px solid var(--safety); display:inline-block; padding-bottom:3px; margin:14px 0 10px; }
-  .item-row{ display:flex; align-items:center; gap:8px; padding:9px 0; border-bottom:1px dashed var(--line); flex-wrap:wrap; }
+  .item-row{ display:flex; align-items:center; gap:12px; padding:9px 0; border-bottom:1px dashed var(--line); flex-wrap:wrap; }
   .item-row .item-text{ flex:1; min-width:220px; font-size:0.92rem; }
   .item-no{ color:var(--muted); font-size:0.8rem; width:22px; flex-shrink:0; }
   .status-btns{ display:flex; gap:6px; flex-shrink:0; }
@@ -131,10 +110,16 @@
   .photo-card img{ width:100%; height:90px; object-fit:cover; display:block; }
   .photo-card button{ position:absolute; top:4px; right:4px; background:rgba(28,29,31,0.75); color:#fff; border:none; border-radius:50%; width:20px; height:20px; cursor:pointer; font-size:0.8rem; }
 
-  .action-bar{ display:flex; gap:8px; justify-content:flex-end; margin-bottom:24px; }
+  .action-bar{ display:flex; gap:12px; justify-content:flex-end; margin-bottom:24px; flex-wrap:wrap; }
   .action-bar button{ padding:11px 22px; border-radius:3px; font-weight:700; font-size:0.9rem; cursor:pointer; border:1px solid var(--ink); }
   .btn-print{ background:var(--ink); color:var(--safety); }
   .btn-reset{ background:#fff; color:var(--ink); }
+  .btn-submit{ background:#2461a8; border-color:#2461a8; color:#fff; }
+  .btn-submit:disabled{ opacity:0.4; cursor:not-allowed; }
+
+  .lock-banner{ display:none; padding:12px 28px; background:var(--bad-bg); color:var(--bad); font-weight:600; font-size:0.82rem; border-bottom:1px solid var(--line); line-height:1.5; }
+  .lock-banner button{ margin-left:10px; padding:5px 10px; border:1px solid var(--bad); background:#fff; color:var(--bad); border-radius:3px; font-weight:700; cursor:pointer; font-size:0.75rem; }
+  .lockable.locked{ pointer-events:none; opacity:0.5; }
 
   /* ===== Combined preview / print sheet ===== */
   .preview-label{ font-size:0.75rem; text-transform:uppercase; letter-spacing:1px; color:var(--muted); margin:0 0 8px 4px; font-weight:700; }
@@ -183,8 +168,8 @@
 
     .combined{ padding:0; }
 
-    .c-head{ padding-bottom:4px; margin-bottom:4px; }
-    .c-head h2{ font-size:1.05rem; margin:0 0 1px; }
+    .c-head{ padding-bottom:4px; margin-bottom:6px; }
+    .c-head h2{ font-size:0.95rem; margin:0 0 1px; }
     .c-head .c-sub{ font-size:0.68rem; }
     .c-head .c-badge{ font-size:0.62rem; padding:3px 8px; }
 
@@ -192,14 +177,14 @@
     .c-info div{ padding:2px 6px; }
     .c-info b{ font-size:0.56rem; }
 
-    .c-meter{ margin-bottom:4px; gap:5px; font-size:0.66rem; }
+    .c-meter{ margin-bottom:6px; gap:5px; font-size:0.66rem; }
     .c-meter div{ padding:2px 6px; }
     .c-meter b{ font-size:0.56rem; }
 
-    table.c-table{ font-size:9px; line-height:1.25; }
-    table.c-table th, table.c-table td{ padding:2.5px 5px; }
-    table.c-table thead th{ font-size:8px; padding:3px 5px; }
-    table.c-table tr.cat-row td{ font-size:8px; padding:3px 5px; }
+    table.c-table{ font-size:8px; line-height:1.15; }
+    table.c-table th, table.c-table td{ padding:1.5px 4px; }
+    table.c-table thead th{ font-size:7px; padding:2.5px 4px; }
+    table.c-table tr.cat-row td{ font-size:7px; padding:2px 4px; }
 
     .c-overall{ margin-top:6px; }
     .c-overall table{ font-size:0.66rem; }
@@ -210,9 +195,9 @@
     .c-photos .grid{ grid-template-columns:repeat(10,1fr); gap:3px; }
     .c-photos img{ height:45px; }
 
-    .c-sign{ margin-top:6px; }
+    .c-sign{ margin-top:10px; }
     .c-sign > p{ font-size:0.62rem; margin:0 0 4px; }
-    .c-sign-grid{ gap:8px; }
+    .c-sign-grid{ gap:12px; }
     .c-sign-block .line{ margin-top:16px; padding-top:3px; font-size:0.6rem; }
     .c-sign-block .role{ font-size:0.64rem; }
   }
@@ -223,17 +208,19 @@
 
 <!-- ===================== SCREEN-ONLY EDITING AREA ===================== -->
 <div class="sheet screen-only">
-    <header>
+  <div class="band"></div>
+  <header>
     <div>
       <h1>Wheel Loader Inspection Form</h1>
       <p class="sub">Data Entry &mdash; Sepangar Chemical Industry Sdn Bhd</p>
     </div>
-    
+    <div class="tag">HSE FORM</div>
   </header>
   <div style="padding:8px 28px; background:#f3f2ee; border-bottom:1px solid var(--line); font-size:0.72rem; color:var(--muted);" id="saveIndicator">Progress auto-saves in this browser as you work.</div>
+  <div class="lock-banner" id="lockBanner"></div>
 
   <div class="meta">
-    <div class="field"><label>Date</label><input type="date" id="fDate" oninput="renderCombined()"></div>
+    <div class="field"><label>Date</label><input type="date" id="fDate" oninput="refreshLockUI(); renderCombined();"></div>
     <div class="field"><label>Time</label><input type="time" id="fTime" oninput="renderCombined()"></div>
     <div class="field"><label>Checked By</label><input type="text" id="fInspector" placeholder="Full name" oninput="renderCombined()"></div>
   </div>
@@ -243,12 +230,12 @@
     <button class="type-btn" id="btnWeekly" onclick="setType('weekly')">WEEKLY INSPECTION</button>
   </div>
 
-  <div class="unit-select-bar">
+  <div class="unit-select-bar lockable" id="unitSelectBar">
     <p>Select Wheel Loader to Inspect</p>
     <div class="unit-btns" id="unitBtns"></div>
   </div>
 
-  <div class="current-unit-bar">
+  <div class="current-unit-bar lockable" id="currentUnitBar">
     <strong id="currentUnitLabel">Currently Inspecting: WL-01</strong>
     <div class="field">
       <label>Hour Meter Reading</label>
@@ -256,16 +243,16 @@
     </div>
   </div>
 
-  <div id="checklistContainer"></div>
+  <div id="checklistContainer" class="lockable"></div>
 
-  <div class="summary-bar">
+  <div class="summary-bar lockable">
     <span>Total Items: <b id="sumTotal">0</b></span>
     <span>OK: <b id="sumOk" style="color:var(--ok)">0</b></span>
     <span>NOT OK: <b id="sumBad" style="color:var(--bad)">0</b></span>
     <span>Unmarked: <b id="sumPending">0</b></span>
   </div>
 
-  <div class="overall-section">
+  <div class="overall-section lockable">
     <h2>Overall Condition of This Unit</h2>
     <div class="overall-options">
       <div class="overall-card good" data-val="good" onclick="setOverall('good')">GOOD CONDITION<small>Safe to operate</small></div>
@@ -276,11 +263,11 @@
 
   <div id="allDoneMsg" class="all-done-msg" style="display:none;">✓ All 4 wheel loaders have been inspected for this session.</div>
 
-  <div class="complete-bar">
+  <div class="complete-bar lockable">
     <button class="btn-complete" id="btnComplete" onclick="markComplete()">✓ Mark as Completed — Lock This Unit</button>
   </div>
 
-  <div class="photo-section">
+  <div class="photo-section lockable">
     <h2>Photos</h2>
     <label class="upload-btn" for="photoInput">+ Add Photo</label>
     <input type="file" id="photoInput" accept="image/*" multiple onchange="handlePhotos(event)">
@@ -296,8 +283,8 @@
 
 <div class="action-bar screen-only">
   <button class="btn-reset" onclick="resetForm()">Reset All</button>
+  <button class="btn-submit" id="btnSubmit" onclick="doSubmit()">✉️ Submit Inspection</button>
   <button class="btn-print" onclick="window.print()">🖨️ Print</button>
-   <button class="btn-print" id="btnSubmit" onclick="submitInspection()">📤 Submit</button>
 </div>
 
 </div>
@@ -356,6 +343,207 @@ let unitData = {};
 UNITS.forEach(u => unitData[u] = { statuses:{}, meter:'', overall:null, completed:false });
 let photos = [];
 
+// ---------- Submission / lock (per day for Daily, per ISO week for Weekly) ----------
+// TODO: set the HSE inbox that submission summary emails should go to
+const SUBMIT_EMAIL = 'hse.sci@example.com';
+// TODO: paste your deployed Google Apps Script Web App URL here (ends in /exec)
+// Leave as-is to run in local-only mode (lock only works on this browser/device).
+const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzF94a4sACv4vrI_ikfea4zdAMofYJ7Y57lO2eAbTaFApVwHy1bYMHMClVzujZf8Npi/exec';
+const SUBMISSIONS_KEY = 'wl_inspection_submissions_v1';
+
+function isServerConfigured(){
+  return WEB_APP_URL && WEB_APP_URL.indexOf('PASTE_')!==0;
+}
+
+async function checkServerLock(type, period){
+  if(!isServerConfigured()) return null;
+  try{
+    const res = await fetch(`${WEB_APP_URL}?type=${encodeURIComponent(type)}&period=${encodeURIComponent(period)}`);
+    const data = await res.json();
+    return data && data.submitted ? data : null;
+  }catch(e){ return null; } // offline / network error — fall back to local-only lock
+}
+
+async function postSubmissionToServer(payload){
+  if(!isServerConfigured()) return { status:'skipped' };
+  try{
+    const res = await fetch(WEB_APP_URL, {
+      method:'POST',
+      headers:{ 'Content-Type':'text/plain;charset=utf-8' }, // avoids CORS preflight on Apps Script
+      body: JSON.stringify(payload)
+    });
+    return await res.json();
+  }catch(e){ return { status:'error', message:'Network error — could not reach the server.' }; }
+}
+
+function loadSubmissions(){
+  try{ const raw = localStorage.getItem(SUBMISSIONS_KEY); return raw ? JSON.parse(raw) : {}; }
+  catch(e){ return {}; }
+}
+function saveSubmissions(subs){
+  try{ localStorage.setItem(SUBMISSIONS_KEY, JSON.stringify(subs)); }catch(e){}
+}
+function getISOWeekKey(dateStr){
+  if(!dateStr) return 'unknown-week';
+  const d = new Date(dateStr + 'T00:00:00');
+  const target = new Date(d.valueOf());
+  const dayNr = (d.getDay() + 6) % 7;
+  target.setDate(target.getDate() - dayNr + 3);
+  const firstThursday = new Date(target.getFullYear(), 0, 4);
+  const diff = target - firstThursday;
+  const week = 1 + Math.round(diff / (7*24*3600*1000));
+  return target.getFullYear() + '-W' + String(week).padStart(2,'0');
+}
+function getPeriodKey(){
+  const dateVal = document.getElementById('fDate') ? document.getElementById('fDate').value : '';
+  return currentType==='weekly' ? ('weekly-' + getISOWeekKey(dateVal)) : ('daily-' + (dateVal || 'unknown-date'));
+}
+function getPeriodLabel(){
+  const dateVal = document.getElementById('fDate') ? document.getElementById('fDate').value : '';
+  return currentType==='weekly' ? getISOWeekKey(dateVal) : (dateVal || 'unknown date');
+}
+function isPeriodLocked(){
+  return !!loadSubmissions()[getPeriodKey()];
+}
+function getPeriodSubmission(){
+  return loadSubmissions()[getPeriodKey()] || null;
+}
+function refreshLockUI(){
+  // Immediate local check first (fast, works offline)
+  applyLockUI(isPeriodLocked() ? getPeriodSubmission() : null);
+
+  // Then confirm against the server (authoritative — catches submissions made
+  // from other inspectors/devices that this browser doesn't know about yet)
+  if(isServerConfigured()){
+    const type = currentType;
+    const period = getPeriodLabel();
+    checkServerLock(type, period).then(serverSub=>{
+      // Only act if we're still looking at the same type/period
+      if(currentType!==type || getPeriodLabel()!==period) return;
+      if(serverSub){
+        // Sync into local storage too so it stays locked even offline later
+        const subs = loadSubmissions();
+        subs[getPeriodKey()] = { type, date: document.getElementById('fDate').value, periodLabel: period, inspector: serverSub.inspector, timestamp: serverSub.timestamp };
+        saveSubmissions(subs);
+        applyLockUI(subs[getPeriodKey()]);
+      }
+    });
+  }
+}
+
+function applyLockUI(sub){
+  const locked = !!sub;
+  const banner = document.getElementById('lockBanner');
+  document.querySelectorAll('.lockable').forEach(el => el.classList.toggle('locked', locked));
+  if(locked){
+    banner.style.display = 'block';
+    const doneText = sub.type==='weekly' ? 'Weekly submission complete.' : 'Daily submission was done.';
+    banner.innerHTML = `⚠ ${doneText} Inspection for ${escapeHtml(String(sub.periodLabel))} was already submitted by ${escapeHtml(sub.inspector||'—')} on ${new Date(sub.timestamp).toLocaleString()}. Further inspection for this ${sub.type==='weekly'?'week':'day'} is disabled.
+      <button onclick="unlockPeriod()">Unlock (edit anyway)</button>`;
+  } else {
+    banner.style.display = 'none';
+  }
+  updateSubmitButton();
+}
+function unlockPeriod(){
+  if(!confirm('This removes the submission lock for this period so it can be edited and resubmitted. Continue?')) return;
+  const subs = loadSubmissions();
+  delete subs[getPeriodKey()];
+  saveSubmissions(subs);
+  refreshLockUI();
+}
+function updateSubmitButton(){
+  const btn = document.getElementById('btnSubmit');
+  if(!btn) return;
+  const allDone = UNITS.every(u=>unitData[u].completed);
+  const locked = isPeriodLocked();
+  btn.disabled = !allDone || locked;
+  btn.textContent = locked ? '✓ Already Submitted' : (allDone ? '✉️ Submit Inspection' : '✉️ Submit (complete all 4 units first)');
+}
+async function doSubmit(){
+  const allDone = UNITS.every(u=>unitData[u].completed);
+  if(!allDone){ alert('Please mark all 4 wheel loaders as completed before submitting.'); return; }
+  if(isPeriodLocked()){ alert('This period has already been submitted.'); return; }
+
+  const date = document.getElementById('fDate').value;
+  const time = document.getElementById('fTime').value;
+  const inspector = document.getElementById('fInspector').value;
+  const typeLabel = currentType==='weekly' ? 'WEEKLY' : 'DAILY';
+  const periodLabel = getPeriodLabel();
+
+  if(!confirm(`Submit this ${typeLabel} inspection for ${periodLabel}? This will lock further changes for this ${currentType==='weekly'?'week':'day'}.`)) return;
+
+  const btn = document.getElementById('btnSubmit');
+  btn.disabled = true;
+  btn.textContent = 'Submitting…';
+
+  // Double-check with the server right before writing, in case another
+  // inspector/device already submitted this exact period moments ago.
+  if(isServerConfigured()){
+    const serverSub = await checkServerLock(currentType, periodLabel);
+    if(serverSub){
+      const subs = loadSubmissions();
+      subs[getPeriodKey()] = { type: currentType, date, periodLabel, inspector: serverSub.inspector, timestamp: serverSub.timestamp };
+      saveSubmissions(subs);
+      applyLockUI(subs[getPeriodKey()]);
+      alert('This period was already submitted by someone else moments ago. This form is now locked and no duplicate was created.');
+      return;
+    }
+  }
+
+  // Build per-unit summary + email body
+  const unitsPayload = [];
+  let body = `${typeLabel} WHEEL LOADER INSPECTION SUBMISSION\nSepangar Chemical Industry Sdn Bhd\n\n`;
+  body += `Date: ${date || '-'}\nTime: ${time || '-'}\nChecked By: ${inspector || '-'}\nType: ${typeLabel}\n\n`;
+  UNITS.forEach(u=>{
+    const d = unitData[u];
+    let ok=0, bad=0;
+    const badItems = [];
+    ITEMS.forEach(it=>{
+      if(currentType==='weekly' ? !it.extra : it.extra) return;
+      const s = d.statuses[it.id];
+      if(s && s.status==='ok') ok++;
+      if(s && s.status==='bad'){
+        bad++;
+        badItems.push({ item: it.t, remark: s.remark || '' });
+      }
+    });
+    unitsPayload.push({ unit:u, meter:d.meter||'', overall:d.overall||'', okCount:ok, notOkCount:bad, items:badItems });
+    body += `${u} - Meter: ${d.meter||'-'} | OK: ${ok} | NOT OK: ${bad} | Overall: ${OVERALL_LABEL[d.overall]}\n`;
+    badItems.forEach(bi => body += `   - ${bi.item}: ${bi.remark || '(no remark)'}\n`);
+  });
+  body += `\nFull checklist and signatures are in the printed inspection form.\n`;
+
+  // Send to Google Sheets backend (if configured)
+  const serverResult = await postSubmissionToServer({
+    type: currentType, period: periodLabel, date, time, inspector, units: unitsPayload
+  });
+
+  if(serverResult && serverResult.status==='error' && serverResult.existing){
+    const subs = loadSubmissions();
+    subs[getPeriodKey()] = { type: currentType, date, periodLabel, inspector: serverResult.existing.inspector, timestamp: serverResult.existing.timestamp };
+    saveSubmissions(subs);
+    applyLockUI(subs[getPeriodKey()]);
+    alert('This period was already submitted (confirmed by the server). No duplicate was created.');
+    return;
+  }
+  if(serverResult && serverResult.status==='error'){
+    alert('Could not save to the server: ' + (serverResult.message || 'unknown error') + '\n\nYour submission was NOT recorded on the server, but you can still email it below and try submitting again once the connection is back.');
+  }
+
+  // Open email client with the summary
+  const subject = `[SCI HSE] ${typeLabel} Wheel Loader Inspection - ${periodLabel}`;
+  window.location.href = `mailto:${SUBMIT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+  // Lock locally regardless (server already has it if configured & succeeded)
+  const subs = loadSubmissions();
+  subs[getPeriodKey()] = { type: currentType, date, periodLabel, inspector, timestamp: new Date().toISOString() };
+  saveSubmissions(subs);
+  applyLockUI(subs[getPeriodKey()]);
+  renderCombined();
+  alert(currentType==='weekly' ? 'Weekly submission complete.' : 'Daily submission was done.');
+}
+
 // ---------- Type toggle ----------
 function setType(type){
   currentType = type;
@@ -363,6 +551,7 @@ function setType(type){
   document.getElementById('btnWeekly').classList.toggle('active', type==='weekly');
   renderChecklist();
   renderCombined();
+  refreshLockUI();
 }
 
 // ---------- Unit selection ----------
@@ -400,6 +589,7 @@ function renderUnitButtons(){
   document.querySelector('.summary-bar').style.display = allDone ? 'none' : 'flex';
   document.querySelector('.overall-section').style.display = allDone ? 'none' : 'block';
   document.querySelector('.complete-bar').style.display = allDone ? 'none' : 'flex';
+  updateSubmitButton();
 }
 
 function selectUnit(u){
@@ -610,13 +800,19 @@ function renderCombined(){
       <div class="grid">${photos.map(p=>`<img src="${p}">`).join('')}</div>
     </div>` : '';
 
+  const sub = getPeriodSubmission();
+  const submittedBadge = sub ? `<div class="c-badge" style="background:var(--ok);">SUBMITTED &mdash; ${new Date(sub.timestamp).toLocaleString()}</div>` : '';
+
   document.getElementById('combinedView').innerHTML = `
     <div class="c-head">
       <div>
         <h2>Wheel Loader Inspection Form</h2>
         <p class="c-sub">Sepangar Chemical Industry Sdn Bhd &mdash; WL-01, WL-02, WL-03, WL-04</p>
       </div>
-      <div class="c-badge">${currentType==='weekly' ? 'WEEKLY INSPECTION' : 'DAILY INSPECTION'}</div>
+      <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;">
+        <div class="c-badge">${currentType==='weekly' ? 'WEEKLY INSPECTION' : 'DAILY INSPECTION'}</div>
+        ${submittedBadge}
+      </div>
     </div>
     <div class="c-info">
       <div><b>Date</b>${date || '-'}</div>
@@ -722,53 +918,11 @@ function init(){
   renderPhotos();
   updateOverallCards();
   renderCombined();
+  refreshLockUI();
   if(restored){
     const ind = document.getElementById('saveIndicator');
     if(ind) ind.textContent = 'Restored your last saved progress from this browser.';
   }
-}
-
-
-const WEBAPP_URL="https://script.google.com/macros/s/AKfycbxqVfNY3CLSy0zWhSRQpLsP_g4VGnFY6EKcoLNpVluJ3R_KvfxBhNZwEtsUqKbFeoP7Og/exec";
-
-async function submitInspection(){
- if(!UNITS.every(u=>unitData[u].completed)){
-   alert("Complete all 4 wheel loader inspections first.");
-   return;
- }
- const payload={
-   type:currentType,
-   date:document.getElementById("fDate").value,
-   time:document.getElementById("fTime").value,
-   inspector:document.getElementById("fInspector").value,
-   units:[]
- };
- UNITS.forEach(u=>{
-   const d=unitData[u];
-   const items=[];
-   ITEMS.forEach(it=>{
-      if(currentType==="weekly"?!it.extra:it.extra)return;
-      const s=d.statuses[it.id]||{};
-      items.push({item:it.t,status:s.status||"",remark:s.remark||""});
-   });
-   payload.units.push({name:u,meter:d.meter||"",overall:d.overall||"",items:items});
- });
- try{
-   const r=await fetch(WEBAPP_URL,{
-     method:"POST",
-     headers:{"Content-Type":"application/json"},
-     body:JSON.stringify(payload)
-   });
-   const res=await r.json();
-   if(res.success){
-      alert((currentType==="daily"?"Daily":"Weekly")+" submission was completed.\nEmail sent successfully.");
-      document.getElementById("btnSubmit").disabled=true;
-   }else{
-      alert("Submit failed: "+res.message);
-   }
- }catch(e){
-   alert("Unable to connect to Apps Script.\n"+e);
- }
 }
 
 init();
