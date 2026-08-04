@@ -1,11 +1,11 @@
-const CACHE_NAME = "SCI-Equipment-v2"; // update versi cache bila ada perubahan
+const CACHE_NAME = "Wheel-Loader-v1"; // nama cache unik untuk projek ini
 const FILES_TO_CACHE = [
-  "./",
-  "./index.html",
-  "./manifest.json",
-  "./icon/icon-192.png",
-  "./icon/icon-512.png",
-  "./icon/apple-touch-icon.png"
+  "/Wheel-Loader/",
+  "/Wheel-Loader/index.html",
+  "/Wheel-Loader/manifest.json",
+  "/Wheel-Loader/icon/icon-192.png",
+  "/Wheel-Loader/icon/icon-512.png",
+  "/Wheel-Loader/icon/apple-touch-icon.png"
 ];
 
 // Install
@@ -42,7 +42,7 @@ self.addEventListener("fetch", (event) => {
       // fallback ke index.html kalau tiada response & offline
       return (
         response ||
-        fetch(event.request).catch(() => caches.match("./index.html"))
+        fetch(event.request).catch(() => caches.match("/Wheel-Loader/index.html"))
       );
     })
   );
