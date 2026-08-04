@@ -1,5 +1,4 @@
-const CACHE_NAME = "SCI-Equipment-v1";
-
+const CACHE_NAME = "SCI-Equipment-v2"; // update versi cache bila ada perubahan
 const FILES_TO_CACHE = [
   "./",
   "./index.html",
@@ -17,7 +16,7 @@ self.addEventListener("install", (event) => {
       return cache.addAll(FILES_TO_CACHE);
     })
   );
-  self.skipWaiting();
+  self.skipWaiting(); // terus aktifkan service worker baru
 });
 
 // Activate
@@ -27,21 +26,24 @@ self.addEventListener("activate", (event) => {
       return Promise.all(
         keys.map((key) => {
           if (key !== CACHE_NAME) {
-            return caches.delete(key);
+            return caches.delete(key); // buang cache lama
           }
         })
       );
     })
   );
-
-  self.clients.claim();
+  self.clients.claim(); // takeover semua tab tanpa tunggu reload
 });
 
 // Fetch
 self.addEventListener("fetch", (event) => {
   event.respondWith(
     caches.match(event.request).then((response) => {
-      return response || fetch(event.request);
+      // fallback ke index.html kalau tiada response & offline
+      return (
+        response ||
+        fetch(event.request).catch(() => caches.match("./index.html"))
+      );
     })
   );
 });
