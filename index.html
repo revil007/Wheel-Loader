@@ -8,7 +8,7 @@
 
 <title>SCI Equipment Inspection</title>
 
-<link rel="manifest" href="manifest.json">
+<link rel="manifest" href="./manifest.json">
 
 <meta name="theme-color" content="#0B2341">
 
@@ -982,15 +982,17 @@ function init(){
 }
 
 init();
-</script>
+
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("/Wheel-Loader/service-worker.js")
-    .then((reg) => {
-      console.log("Service worker registered:", reg);
-    })
-    .catch((err) => {
-      console.error("Service worker registration failed:", err);
-    });
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./service-worker.js")
+      .then((reg) => {
+        console.log("✅ Service Worker registered:", reg);
+      })
+      .catch((err) => {
+        console.error("❌ Service Worker registration failed:", err);
+      });
+  });
 }
 </script>
 </body>
