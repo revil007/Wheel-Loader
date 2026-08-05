@@ -8,7 +8,7 @@
 
 <title>SCI Equipment Inspection</title>
 
-<link rel="manifest" href="./manifest.json">
+<link rel="manifest" href="manifest.json">
 
 <meta name="theme-color" content="#0B2341">
 
@@ -222,6 +222,57 @@
     .c-sign-block .line{ margin-top:18px; padding-top:3px; font-size:0.72rem; }
     .c-sign-block .role{ font-size:0.74rem; }
   }
+
+/* ===== Mobile Layout v2 ===== */
+@media (max-width:480px){
+  body{padding:12px 8px 70px;}
+
+  .meta,.type-toggle,.unit-select-bar,.current-unit-bar,
+  .category,.overall-section,.photo-section,.complete-bar{
+    padding-left:14px;
+    padding-right:14px;
+  }
+
+  .item-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    flex-wrap:nowrap !important;
+  }
+
+  .item-no{
+    width:24px;
+    flex:0 0 24px;
+    font-size:.75rem;
+  }
+
+  .item-text{
+    flex:1 1 auto;
+    min-width:0;
+    white-space:normal;
+    overflow-wrap:break-word;
+    line-height:1.25;
+    font-size:.92rem;
+  }
+
+  .status-btns{
+    flex:0 0 auto;
+    display:flex;
+    gap:4px;
+    white-space:nowrap;
+  }
+
+  .status-btns button{
+    width:58px;
+    padding:7px 4px;
+    font-size:.72rem;
+  }
+
+  .remark-box{
+    margin-left:32px;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -982,17 +1033,15 @@ function init(){
 }
 
 init();
-
+</script>
 if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./service-worker.js")
-      .then((reg) => {
-        console.log("✅ Service Worker registered:", reg);
-      })
-      .catch((err) => {
-        console.error("❌ Service Worker registration failed:", err);
-      });
-  });
+  navigator.serviceWorker.register("/Wheel-Loader/service-worker.js")
+    .then((reg) => {
+      console.log("Service worker registered:", reg);
+    })
+    .catch((err) => {
+      console.error("Service worker registration failed:", err);
+    });
 }
 </script>
 </body>
