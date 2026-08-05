@@ -8,7 +8,7 @@
 
 <title>SCI Equipment Inspection</title>
 
-<link rel="manifest" href="manifest.json">
+<link rel="manifest" href="./manifest.json">
 
 <meta name="theme-color" content="#0B2341">
 
@@ -94,11 +94,17 @@
 
   .category{ padding:14px 28px 4px; }
   .category h2{ font-size:0.83rem; text-transform:uppercase; letter-spacing:0.8px; color:var(--safety-dark); border-bottom:2px solid var(--safety); display:inline-block; padding-bottom:3px; margin:14px 0 10px; }
-  .item-row{ display:flex; align-items:center; gap:12px; padding:9px 0; border-bottom:1px dashed var(--line); flex-wrap:wrap; }
-  .item-row .item-text{ flex:1; min-width:220px; font-size:0.92rem; }
-  .item-no{ color:var(--muted); font-size:0.8rem; width:22px; flex-shrink:0; }
+  .item-row{ display:flex; align-items:flex-start; gap:8px; padding:9px 0; border-bottom:1px dashed var(--line); flex-wrap:nowrap; }
+  .item-row .item-text{ flex:1 1 auto; min-width:0; font-size:0.92rem; overflow-wrap:break-word; word-break:break-word; padding-top:6px; }
+  .item-no{ color:var(--muted); font-size:0.8rem; width:22px; flex-shrink:0; padding-top:6px; }
   .status-btns{ display:flex; gap:6px; flex-shrink:0; }
   .status-btns button{ border:1px solid var(--line); background:#fff; padding:6px 14px; border-radius:3px; font-weight:700; font-size:0.8rem; cursor:pointer; }
+  @media (max-width:480px){
+    .item-row{ gap:6px; }
+    .item-row .item-text{ font-size:0.86rem; }
+    .status-btns{ flex-direction:column; gap:5px; }
+    .status-btns button{ padding:5px 10px; font-size:0.74rem; }
+  }
   .status-btns button.ok-btn.active{ background:var(--ok); border-color:var(--ok); color:#fff; }
   .status-btns button.bad-btn.active{ background:var(--bad); border-color:var(--bad); color:#fff; }
   .remark-box{ width:100%; margin-top:6px; display:none; }
@@ -222,57 +228,6 @@
     .c-sign-block .line{ margin-top:18px; padding-top:3px; font-size:0.72rem; }
     .c-sign-block .role{ font-size:0.74rem; }
   }
-
-/* ===== Mobile Layout v2 ===== */
-@media (max-width:480px){
-  body{padding:12px 8px 70px;}
-
-  .meta,.type-toggle,.unit-select-bar,.current-unit-bar,
-  .category,.overall-section,.photo-section,.complete-bar{
-    padding-left:14px;
-    padding-right:14px;
-  }
-
-  .item-row{
-    display:flex;
-    align-items:center;
-    gap:8px;
-    flex-wrap:nowrap !important;
-  }
-
-  .item-no{
-    width:24px;
-    flex:0 0 24px;
-    font-size:.75rem;
-  }
-
-  .item-text{
-    flex:1 1 auto;
-    min-width:0;
-    white-space:normal;
-    overflow-wrap:break-word;
-    line-height:1.25;
-    font-size:.92rem;
-  }
-
-  .status-btns{
-    flex:0 0 auto;
-    display:flex;
-    gap:4px;
-    white-space:nowrap;
-  }
-
-  .status-btns button{
-    width:58px;
-    padding:7px 4px;
-    font-size:.72rem;
-  }
-
-  .remark-box{
-    margin-left:32px;
-  }
-}
-
 </style>
 </head>
 <body>
@@ -1033,15 +988,17 @@ function init(){
 }
 
 init();
-</script>
+
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("/Wheel-Loader/service-worker.js")
-    .then((reg) => {
-      console.log("Service worker registered:", reg);
-    })
-    .catch((err) => {
-      console.error("Service worker registration failed:", err);
-    });
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./service-worker.js")
+      .then((reg) => {
+        console.log("✅ Service Worker registered:", reg);
+      })
+      .catch((err) => {
+        console.error("❌ Service Worker registration failed:", err);
+      });
+  });
 }
 </script>
 </body>
